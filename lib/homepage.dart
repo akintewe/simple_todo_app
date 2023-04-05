@@ -11,12 +11,20 @@ class _TodoListState extends State<TodoList> {
     'Do laundry',
     'Call mom',
   ];
+  int _counter = 0; // updated to start at 0
+
+  void _increaseCount() {
+    setState(() {
+      _counter++;
+    });
+  }
+
   void addTodo() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Task'),
+          title: const Text('Add Task'),
           content: TextField(
             autofocus: true,
             onSubmitted: (value) {
@@ -37,7 +45,7 @@ class _TodoListState extends State<TodoList> {
       builder: (BuildContext context) {
         String newTodo = todos[index];
         return AlertDialog(
-          title: Text('Edit Task'),
+          title: const Text('Edit Task'),
           content: TextField(
             autofocus: true,
             onChanged: (value) {
@@ -47,15 +55,16 @@ class _TodoListState extends State<TodoList> {
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () {
+                onPressed:
                 setState(() {
                   todos[index] = newTodo;
                 });
@@ -79,11 +88,11 @@ class _TodoListState extends State<TodoList> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Todo'),
-          content: Text('Are you sure you want to delete this todo?'),
+          title: const Text('Delete Todo'),
+          content: const Text('Are you sure you want to delete this todo?'),
           actions: [
             TextButton(
-              child: Text('No', style: TextStyle(color: Colors.purple)),
+              child: const Text('No', style: TextStyle(color: Colors.purple)),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             ElevatedButton(
@@ -106,62 +115,59 @@ class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.purple,
-        title: Text('My Todo List'),
-        centerTitle: true,
-      ),
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.center,
-                colors: [Colors.purple, Colors.white])),
-        child: Container(
+      body: Stack(fit: StackFit.expand, children: [
+        Container(
           child: ListView.builder(
             itemCount: todos.length,
             itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(todos[index]),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit,
-                        color: Colors.green[100],
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.pink[100],
+                ),
+                margin: EdgeInsets.symmetric(vertical: 5),
+                child: ListTile(
+                  title: Text(todos[index]),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.edit,
+                          color: Colors.green[100],
+                        ),
+                        onPressed: () {
+                          editTodo(index);
+                        },
                       ),
-                      onPressed: () {
-                        editTodo(index);
-                      },
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          _deleteTodoAtIndex(index);
+                        },
                       ),
-                      onPressed: () {
-                        _deleteTodoAtIndex(index);
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
           ),
         ),
-      ),
+      ]),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () {
+          _increaseCount();
           showDialog(
             context: context,
             builder: (BuildContext context) {
               String newTodo = '';
               return AlertDialog(
-                title: Text('Add Task'),
+                title: const Text('Add Task'),
                 content: TextField(
                   autofocus: true,
                   onChanged: (value) {
@@ -170,7 +176,7 @@ class _TodoListState extends State<TodoList> {
                 ),
                 actions: [
                   TextButton(
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                       style: TextStyle(
                         color: Colors.red,
@@ -184,7 +190,7 @@ class _TodoListState extends State<TodoList> {
                     style: ElevatedButton.styleFrom(
                       primary: Colors.purple,
                     ),
-                    child: Text('Add'),
+                    child: const Text('Add'),
                     onPressed: () {
                       setState(() {
                         todos.add(newTodo);
